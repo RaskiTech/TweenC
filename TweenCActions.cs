@@ -5,6 +5,9 @@ using UnityEngine.UI;
 // Class returned to the user so it can't call any other functions that
 public abstract class TweenCActions
 {
+    /// <summary>Is playing the tween.</summary>
+    public abstract bool isPlaying();
+
     /// <summary>Destroys the tweening process.</summary>
     public abstract void Stop();
 
@@ -60,8 +63,8 @@ public abstract class TweenTemplate : TweenCActions
 
     public enum TweenType
     {
-        Value, Vector, Color,
-        Move, LocalMove, Scale, Rotate,
+        Value, Vector, Color, Timer,
+        Move, LocalMove, Scale, GlobalScale, Rotate, LocalRotate,
         RectMove, RectLocalMove, RectScale, RectRotate, RectSizeDelta,
         ImageColor, // Alpha included
         SpriteColor, // Alpha included
@@ -273,8 +276,11 @@ public abstract class TweenTemplate : TweenCActions
     }
 
     public override void Stop() {
-        // Taken care at next Update()
         mTotalDuration = 0;
+    }
+
+    public override bool isPlaying() {
+        return mTotalDuration <= 0.00001f;
     }
 }
 
@@ -334,6 +340,25 @@ public class FloatTween : TweenTemplate
     }
     public override TweenCActions SetOnUpdate(Action<Color> action) {
         Debug.LogWarning("TweenC: Tried to call SetOnUpdate with a color, but FloatTween can only give a float");
+        return this;
+    }
+    public override void CallAction(Vector4 value) { mUpdateAction?.Invoke(value.x); }
+}
+public class TimerTween : TweenTemplate
+{
+    public Action<float> mUpdateAction;
+    public TimerTween(float duration, TweenType type) : base(Vector4.zero, Vector4.zero, duration, type) { }
+
+    public override TweenCActions SetOnUpdate(Action<float> action) {
+        mUpdateAction = action;
+        return this;
+    }
+    public override TweenCActions SetOnUpdate(Action<Vector3> action) {
+        Debug.LogWarning("TweenC: Tried to call SetOnUpdate with a vector3, but Timer can only give a float");
+        return this;
+    }
+    public override TweenCActions SetOnUpdate(Action<Color> action) {
+        Debug.LogWarning("TweenC: Tried to call SetOnUpdate with a color, but Timer can only give a float");
         return this;
     }
     public override void CallAction(Vector4 value) { mUpdateAction?.Invoke(value.x); }

@@ -43,6 +43,15 @@ public class RunTweens : MonoBehaviour
                 case TweenTemplate.TweenType.Rotate:
                     (tween as TransformTween).mTrans.eulerAngles = GetValueInTime(tween);
                     break;
+                case TweenTemplate.TweenType.LocalRotate:
+                    (tween as TransformTween).mTrans.localEulerAngles = GetValueInTime(tween);
+                    break;
+                case TweenTemplate.TweenType.GlobalScale:
+                    Vector4 val = GetValueInTime(tween);
+                    Transform trans = (tween as TransformTween).mTrans;
+                    trans.localScale = Vector3.one;
+                    trans.localScale = new Vector3(val.x/trans.lossyScale.x, val.y/trans.lossyScale.y, val.z/trans.lossyScale.z);
+                    break;
                 case TweenTemplate.TweenType.RectMove:
                     (tween as RectTween).mRectT.position = GetValueInTime(tween);
                     break;
@@ -84,6 +93,8 @@ public class RunTweens : MonoBehaviour
                     break;
                 case TweenTemplate.TweenType.AudioReverbZoneMix:
                     (tween as AudioTween).mSource.reverbZoneMix = GetValueInTime(tween).x;
+                    break;
+                default:
                     break;
             }
 

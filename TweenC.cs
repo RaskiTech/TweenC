@@ -3,8 +3,6 @@ using UnityEngine.UI;
 
 public static class TweenC
 {
-    // TweenC 1.9
-
     static RunTweens tweenRunner;
     static bool throwNullWarnings = true;
     #region User methods
@@ -22,6 +20,9 @@ public static class TweenC
     /// <summary>Tween a value between two colors. Use .SetOnUpdate((Color c) => {}) to get access to the value.</summary>
     public static TweenCActions Color(Color from, Color to, float duration) {
         return SetupTween(new ColorTween(Vector4(from), Vector4(to), duration, TweenTemplate.TweenType.Color));
+    }
+    public static TweenCActions Timer(float duration) {
+        return SetupTween(new TimerTween(duration, TweenTemplate.TweenType.Timer));
     }
     public static TweenCActions MoveX(Transform transform, float position, float duration) {
         return SetupTween(transform != null ? new TransformTween(transform, transform.localPosition,
@@ -46,6 +47,15 @@ public static class TweenC
     }
     public static TweenCActions Rotate(Transform trans, Vector3 rotation, float duration) {
         return SetupTween(trans != null ? new TransformTween(trans, trans.rotation.eulerAngles, rotation, duration, TweenTemplate.TweenType.Rotate) : null);
+    }
+    public static TweenCActions LocalRotate(Transform trans, Vector3 rotation, float duration) {
+        return SetupTween(trans != null ? new TransformTween(trans, trans.localRotation.eulerAngles, rotation, duration, TweenTemplate.TweenType.LocalRotate) : null);
+    }
+    public static TweenCActions LocalScale(Transform trans, Vector3 scale, float duration) {
+        return Scale(trans, scale, duration);
+    }
+    public static TweenCActions GlobalScale(Transform trans, Vector3 scale, float duration) {
+        return SetupTween(trans != null ? new TransformTween(trans, trans.lossyScale, scale, duration, TweenTemplate.TweenType.GlobalScale) : null);
     }
     public static TweenCActions RectMove(RectTransform rect, Vector3 position, float duration) {
         return SetupTween(rect != null ? new RectTween(rect, rect.position, position, duration, TweenTemplate.TweenType.RectMove) : null);
